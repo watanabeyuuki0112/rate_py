@@ -21,7 +21,6 @@ racer_df = pd.read_sql("SELECT * FROM racer ORDER BY ID ASC",conn,index_col="ind
 racer_df = racer_df.drop_duplicates("ID")
 
 games_df = pd.read_sql("SELECT Position,Lane,Register,raceID FROM race_result",conn)
-#games_df["raceID"] = games_df["raceID"].map(lambda x: x[:-2])
 games_df["raceID"] = games_df["raceID"].astype("int64")
 
 conn.commit()
@@ -78,21 +77,6 @@ for group in raceID:
     for ID,rate_obj in zip(IDs,rate_group):
         ratings[ID] = rate_obj[0]
 
-    
-
-win_prob = np.reshape(np.array(win_prob),[-1,6])
-
-
-rating_df = pd.DataFrame(data={"mu":mu,"sigma":sigma,"exp":exp,"quality":quality},index=indexs)
-rating_df = pd.concat([rating_df,pd.DataFrame(win_prob,index=indexs).astype(float)],axis=1)
-rating_df = rating_df.sort_index()
-
-
-rating_df.to_csv("fixrate.csv",mode="w",encoding="utf-8-sig")
-
-
-
-
 mu_ = []
 sigma_ = []
 exp_ = []
@@ -103,7 +87,7 @@ for value in ratings.values():
 racer_df["mu"] = mu_
 racer_df["sigma"] = sigma_
 racer_df["exp"] = exp_
-games_df.to_csv("fixrate.csv",mode="w",encoding="utf-8-sig")
+
 
 
     
